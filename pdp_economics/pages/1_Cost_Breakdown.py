@@ -64,7 +64,6 @@ def compute_costs(scenario2erpt=None):
         power_cost_tib_per_yr=power_cost_tib_per_yr, bandwidth_10gbps_tib_per_yr=bw_cost_tib_per_yr,
         staff_cost_tib_per_yr=staff_cost_tib_per_yr
     )
-    print(df)
     plot_costs(df)
 
 def plot_costs(df):
@@ -221,7 +220,7 @@ with st.sidebar:
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
         )
         st.slider(
-            'PDP', min_value=1, max_value=20, value=1, step=1, key="pdp_multiplier",
+            'PDP', min_value=0, max_value=20, value=0, step=1, key="pdp_multiplier",
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
         )
         st.slider(

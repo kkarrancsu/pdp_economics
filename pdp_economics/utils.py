@@ -126,7 +126,7 @@ def compute_costs(scenario2erpt=None,
     }
     pdp_miner = {
         'SP Type': 'PDP',
-        'block_rewards': 0,
+        'block_rewards': erpt*exchange_rate*pdp_multiplier,
         'deal_income': pdp_deal_income_tib_per_yr,
         'pledge_cost': erpt*exchange_rate*pdp_multiplier*borrowing_cost_pct,
         'gas_cost': gas_cost_tib_per_yr,
@@ -134,7 +134,7 @@ def compute_costs(scenario2erpt=None,
         'bandwidth_cost': bandwidth_10gbps_tib_per_yr,
         'staff_cost': staff_cost_tib_per_yr,
         'sealing_cost': 0,
-        'data_prep_cost': data_prep_cost_tib_per_yr,
+        'data_prep_cost': 0,
         'bd_cost': rd_bd_cost_tib_per_yr,
         'extra_copy_cost': 0,
         'cheating_cost': 0
