@@ -139,21 +139,36 @@ def compute_costs(scenario2erpt=None,
         'extra_copy_cost': 0,
         'cheating_cost': 0
     }
-    # filp_exploit_miner = {
-    #     'SP Type':'V1-ExploitFIL+',
-    #     'block_rewards': erpt*exchange_rate*filp_multiplier,
-    #     'deal_income': 0,
-    #     'pledge_cost': erpt*exchange_rate*filp_multiplier*borrowing_cost_pct,
-    #     'gas_cost': gas_cost_tib_per_yr,
-    #     'power_cost': power_cost_tib_per_yr,
-    #     'bandwidth_cost': bandwidth_1gbps_tib_per_yr,
-    #     'staff_cost': staff_cost_tib_per_yr,
-    #     'sealing_cost': sealing_costs_tib_per_yr,
-    #     'data_prep_cost': 1,
-    #     'bd_cost': 0,
-    #     'extra_copy_cost': 0,
-    #     'cheating_cost': 0
-    # }
+    pdp_exploit_miner = {
+        'SP Type': 'Wash-PDP',
+        'block_rewards': erpt*exchange_rate*pdp_multiplier,
+        'deal_income': 0,
+        'pledge_cost': erpt*exchange_rate*pdp_multiplier*borrowing_cost_pct,
+        'gas_cost': gas_cost_tib_per_yr,
+        'power_cost': power_cost_tib_per_yr,
+        'bandwidth_cost': bandwidth_1gbps_tib_per_yr,
+        'staff_cost': staff_cost_tib_per_yr/2,
+        'sealing_cost': 0,
+        'data_prep_cost': 0,
+        'bd_cost': 0,
+        'extra_copy_cost': 0,
+        'cheating_cost': 0
+    }
+    filp_exploit_miner = {
+        'SP Type':'Wash-FIL+',
+        'block_rewards': erpt*exchange_rate*filp_multiplier,
+        'deal_income': 0,
+        'pledge_cost': erpt*exchange_rate*filp_multiplier*borrowing_cost_pct,
+        'gas_cost': gas_cost_tib_per_yr,
+        'power_cost': power_cost_tib_per_yr,
+        'bandwidth_cost': bandwidth_1gbps_tib_per_yr,
+        'staff_cost': staff_cost_tib_per_yr/2,
+        'sealing_cost': sealing_costs_tib_per_yr,
+        'data_prep_cost': 1,
+        'bd_cost': 0,
+        'extra_copy_cost': 0,
+        'cheating_cost': 0
+    }
     # filp_exploit_with_retrieval = {
     #     'SP Type':'V2-ExploitFIL+',
     #     'block_rewards': erpt*exchange_rate*filp_multiplier,
@@ -216,7 +231,7 @@ def compute_costs(scenario2erpt=None,
     }
     # df = pd.DataFrame([filp_miner, rd_miner, filp_exploit_miner, filp_cheat_miner, cc_miner, aws])
     # df = pd.DataFrame([filp_miner, rd_miner, filp_exploit_miner, filp_exploit_with_retrieval, filp_exploit_with_retrieval_and_slash, cc_miner])
-    df = pd.DataFrame([filp_miner, rd_miner, cc_miner, pdp_miner])
+    df = pd.DataFrame([filp_miner,filp_exploit_miner, rd_miner, cc_miner, pdp_miner,pdp_exploit_miner])
     # add final accounting to the DF
     revenue = df['block_rewards'] + df['deal_income']
     cost = (

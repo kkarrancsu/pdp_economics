@@ -151,7 +151,7 @@ compute_costs_kwargs = {
 with st.sidebar:
     st.slider(
         "FIL Exchange Rate ($/FIL)", 
-        min_value=3., max_value=50., value=4.0, step=.1, format='%0.02f', key="filprice_slider",
+        min_value=0.1, max_value=50., value=5.7, step=.1, format='%0.02f', key="filprice_slider",
         on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
     )
     st.selectbox(
@@ -161,12 +161,12 @@ with st.sidebar:
     with st.expander("Revenue Settings", expanded=False):
         st.slider(
             'Deal Income ($/TiB/Yr)', 
-            min_value=0.0, max_value=100.0, value=16.0, step=1.0, format='%0.02f', key="deal_income",
+            min_value=0.0, max_value=100.0, value=10.0, step=1.0, format='%0.02f', key="deal_income",
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
         )
         st.slider(
             'PDP Deal Income ($/TiB/Yr)',
-            min_value=0.0, max_value=100.0, value=32.0, step=1.0, format='%0.02f', key="pdp_deal_income",
+            min_value=0.0, max_value=100.0, value=20.0, step=1.0, format='%0.02f', key="pdp_deal_income",
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
         )
     with st.expander("Cost Settings", expanded=False):
@@ -192,7 +192,7 @@ with st.sidebar:
         )
         st.slider(
             'FIL+ Slashing Penalty ($/TiB/Yr)', 
-            min_value=0.0, max_value=50.0, value=18.0, step=1.0, format='%0.02f', key="cheating_penalty",
+            min_value=0.0, max_value=50.0, value=0.0, step=1.0, format='%0.02f', key="cheating_penalty",
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
         )
         st.slider(
