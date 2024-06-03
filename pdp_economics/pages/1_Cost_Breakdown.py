@@ -53,6 +53,13 @@ def compute_costs(scenario2erpt=None):
     bw_cost_tib_per_yr = st.session_state['bw_cost']
     staff_cost_tib_per_yr = st.session_state['staff_cost']
 
+    sealing_cost_tib_per_yr = st.session_state['sealing_cost']
+
+    # get gas costs
+    gas_cost_nopsd_tib_per_yr = st.session_state['gas_cost_nopsd']
+    gas_cost_psd_tib_per_yr = st.session_state['gas_cost_psd']
+    gas_cost_pdp_tib_per_yr = st.session_state['gas_cost_pdp']
+
     df = utils.compute_costs(
         scenario2erpt=scenario2erpt,
         filp_multiplier=filp_multiplier, rd_multiplier=rd_multiplier, cc_multiplier=cc_multiplier, pdp_multiplier=pdp_multiplier,
@@ -62,7 +69,11 @@ def compute_costs(scenario2erpt=None):
         deal_income_tib_per_yr=deal_income_tib_per_yr, pdp_deal_income_tib_per_yr=pdp_deal_income_tib_per_yr,
         data_prep_cost_tib_per_yr=data_prep_cost_tib_per_yr, penalty_tib_per_yr=penalty_tib_per_yr,
         power_cost_tib_per_yr=power_cost_tib_per_yr, bandwidth_10gbps_tib_per_yr=bw_cost_tib_per_yr,
-        staff_cost_tib_per_yr=staff_cost_tib_per_yr
+        staff_cost_tib_per_yr=staff_cost_tib_per_yr,
+        sealing_cost_tib_per_yr=sealing_cost_tib_per_yr,
+        gas_cost_nopsd_tib_per_yr=gas_cost_nopsd_tib_per_yr,
+        gas_cost_psd_tib_per_yr=gas_cost_psd_tib_per_yr,
+        gas_cost_pdp_tib_per_yr=gas_cost_pdp_tib_per_yr
     )
     plot_costs(df)
 
@@ -191,11 +202,6 @@ with st.sidebar:
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
         )
         st.slider(
-            'FIL+ Slashing Penalty ($/TiB/Yr)', 
-            min_value=0.0, max_value=50.0, value=0.0, step=1.0, format='%0.02f', key="cheating_penalty",
-            on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
-        )
-        st.slider(
             'Power+COLO Cost ($/TiB/Yr)', 
             min_value=0.0, max_value=50.0, value=6.0, step=1.0, format='%0.02f', key="power_cost",
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
@@ -206,8 +212,29 @@ with st.sidebar:
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
         )
         st.slider(
+            'Sealing Cost ($/TiB/Yr)',
+            min_value=0.0, max_value=10.0, value=1.3, step=0.1, format='%0.02f', key="sealing_cost",
+            on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
+        )
+        st.slider(
             'Staff Cost ($/TiB/Yr)', 
             min_value=0.0, max_value=50.0, value=8.0, step=1.0, format='%0.02f', key="staff_cost",
+            on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
+        )
+    with st.expander("Gas", expanded=False):
+        st.slider(
+            'Gas Cost [No PSD // CC] ($/TiB/Yr)', 
+            min_value=0.0, max_value=20.0, value=0.1, step=0.1, format='%0.02f', key="gas_cost_nopsd",
+            on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
+        )
+        st.slider(
+            'Gas Cost [PSD // QA] ($/TiB/Yr)', 
+            min_value=0.0, max_value=20.0, value=2.0, step=0.1, format='%0.02f', key="gas_cost_psd",
+            on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
+        )
+        st.slider(
+            'Gas Cost [PDP // PDP] ($/TiB/Yr)', 
+            min_value=0.0, max_value=20.0, value=0.1, step=0.1, format='%0.02f', key="gas_cost_pdp",
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
         )
     with st.expander("Multipliers", expanded=False):
@@ -225,6 +252,12 @@ with st.sidebar:
         )
         st.slider(
             'FIL+', min_value=1, max_value=20, value=10, step=1, key="filp_multiplier",
+            on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
+        )
+    with st.expander("Penalties", expanded=False):
+        st.slider(
+            'FIL+ Slashing Penalty ($/TiB/Yr)', 
+            min_value=0.0, max_value=50.0, value=0.0, step=1.0, format='%0.02f', key="cheating_penalty",
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
         )
     

@@ -68,13 +68,14 @@ def get_offline_data(start_date, current_date, end_date):
 
 def get_negligible_costs(bandwidth_10gbps_tib_per_yr):
     # Definitions (we can make these configurable later, potentially)
-    sealing_costs_tib_per_yr = 1.3
+    # sealing_costs_tib_per_yr = 1.3
 
-    gas_cost_tib_per_yr = (2250.+108.)/1024.
-    gas_cost_without_psd_tib_per_yr = 108./1024.
+    # gas_cost_tib_per_yr = (2250.+108.)/1024.
+    # gas_cost_without_psd_tib_per_yr = 108./1024.
     bandwidth_1gbps_tib_per_yr=bandwidth_10gbps_tib_per_yr/10.0
 
-    return sealing_costs_tib_per_yr, gas_cost_tib_per_yr, gas_cost_without_psd_tib_per_yr, bandwidth_1gbps_tib_per_yr
+    # return sealing_costs_tib_per_yr, gas_cost_tib_per_yr, gas_cost_without_psd_tib_per_yr, bandwidth_1gbps_tib_per_yr
+    return bandwidth_1gbps_tib_per_yr
 
 
 def compute_costs(scenario2erpt=None, 
@@ -87,11 +88,15 @@ def compute_costs(scenario2erpt=None,
                   data_prep_cost_tib_per_yr=1.0, penalty_tib_per_yr=0.0,
                   power_cost_tib_per_yr=6, 
                   bandwidth_10gbps_tib_per_yr=6, 
-                  staff_cost_tib_per_yr=10
+                  staff_cost_tib_per_yr=10,
+                  sealing_cost_tib_per_yr=1.3,
+                  gas_cost_nopsd_tib_per_yr=0.1,
+                  gas_cost_psd_tib_per_yr=2.0,
+                  gas_cost_pdp_tib_per_yr=0.1,
                   ):
     erpt = scenario2erpt[onboarding_scenario]
     
-    sealing_costs_tib_per_yr, gas_cost_tib_per_yr, gas_cost_without_psd_tib_per_yr, bandwidth_1gbps_tib_per_yr = get_negligible_costs(bandwidth_10gbps_tib_per_yr)
+    bandwidth_1gbps_tib_per_yr = get_negligible_costs(bandwidth_10gbps_tib_per_yr)
     
     # create a dataframe for each of the miner profiles
     filp_miner = {
@@ -99,11 +104,11 @@ def compute_costs(scenario2erpt=None,
         'block_rewards': erpt*exchange_rate*filp_multiplier,
         'deal_income': deal_income_tib_per_yr,
         'pledge_cost': erpt*exchange_rate*filp_multiplier*borrowing_cost_pct,
-        'gas_cost': gas_cost_tib_per_yr,
+        'gas_cost': gas_cost_psd_tib_per_yr,
         'power_cost': power_cost_tib_per_yr,
         'bandwidth_cost': bandwidth_10gbps_tib_per_yr,
         'staff_cost': staff_cost_tib_per_yr,
-        'sealing_cost': sealing_costs_tib_per_yr,
+        'sealing_cost': sealing_cost_tib_per_yr,
         'data_prep_cost': data_prep_cost_tib_per_yr,
         'bd_cost': filp_bd_cost_tib_per_yr,
         'extra_copy_cost': (staff_cost_tib_per_yr+power_cost_tib_per_yr)*0.5,
@@ -114,11 +119,11 @@ def compute_costs(scenario2erpt=None,
         'block_rewards': erpt*exchange_rate*rd_multiplier,
         'deal_income': deal_income_tib_per_yr,
         'pledge_cost': erpt*exchange_rate*rd_multiplier*borrowing_cost_pct,
-        'gas_cost': gas_cost_tib_per_yr,
+        'gas_cost': gas_cost_nopsd_tib_per_yr,
         'power_cost': power_cost_tib_per_yr,
         'bandwidth_cost': bandwidth_10gbps_tib_per_yr,
         'staff_cost': staff_cost_tib_per_yr,
-        'sealing_cost': sealing_costs_tib_per_yr,
+        'sealing_cost': sealing_cost_tib_per_yr,
         'data_prep_cost': data_prep_cost_tib_per_yr,
         'bd_cost': rd_bd_cost_tib_per_yr,
         'extra_copy_cost': (staff_cost_tib_per_yr+power_cost_tib_per_yr)*0.5,
@@ -129,7 +134,7 @@ def compute_costs(scenario2erpt=None,
         'block_rewards': erpt*exchange_rate*pdp_multiplier,
         'deal_income': pdp_deal_income_tib_per_yr,
         'pledge_cost': erpt*exchange_rate*pdp_multiplier*borrowing_cost_pct,
-        'gas_cost': gas_cost_tib_per_yr,
+        'gas_cost': gas_cost_pdp_tib_per_yr,
         'power_cost': power_cost_tib_per_yr,
         'bandwidth_cost': bandwidth_10gbps_tib_per_yr,
         'staff_cost': staff_cost_tib_per_yr,
@@ -144,7 +149,7 @@ def compute_costs(scenario2erpt=None,
         'block_rewards': erpt*exchange_rate*pdp_multiplier,
         'deal_income': 0,
         'pledge_cost': erpt*exchange_rate*pdp_multiplier*borrowing_cost_pct,
-        'gas_cost': gas_cost_tib_per_yr,
+        'gas_cost': gas_cost_pdp_tib_per_yr,
         'power_cost': power_cost_tib_per_yr,
         'bandwidth_cost': bandwidth_1gbps_tib_per_yr,
         'staff_cost': staff_cost_tib_per_yr/2,
@@ -159,56 +164,26 @@ def compute_costs(scenario2erpt=None,
         'block_rewards': erpt*exchange_rate*filp_multiplier,
         'deal_income': 0,
         'pledge_cost': erpt*exchange_rate*filp_multiplier*borrowing_cost_pct,
-        'gas_cost': gas_cost_tib_per_yr,
+        'gas_cost': gas_cost_psd_tib_per_yr,
         'power_cost': power_cost_tib_per_yr,
         'bandwidth_cost': bandwidth_1gbps_tib_per_yr,
         'staff_cost': staff_cost_tib_per_yr/2,
-        'sealing_cost': sealing_costs_tib_per_yr,
+        'sealing_cost': sealing_cost_tib_per_yr,
         'data_prep_cost': 1,
         'bd_cost': 0,
         'extra_copy_cost': 0,
         'cheating_cost': 0
     }
-    # filp_exploit_with_retrieval = {
-    #     'SP Type':'V2-ExploitFIL+',
-    #     'block_rewards': erpt*exchange_rate*filp_multiplier,
-    #     'deal_income': 0,
-    #     'pledge_cost': erpt*exchange_rate*filp_multiplier*borrowing_cost_pct,
-    #     'gas_cost': gas_cost_tib_per_yr,
-    #     'power_cost': power_cost_tib_per_yr,
-    #     'bandwidth_cost': bandwidth_10gbps_tib_per_yr,
-    #     'staff_cost': staff_cost_tib_per_yr,
-    #     'sealing_cost': sealing_costs_tib_per_yr,
-    #     'data_prep_cost': 1,
-    #     'bd_cost': 0,
-    #     'extra_copy_cost': (staff_cost_tib_per_yr*0.5+bandwidth_10gbps_tib_per_yr)*0.5,
-    #     'cheating_cost': 0
-    # }
-    # filp_exploit_with_retrieval_and_slash = {
-    #     'SP Type':'V3-ExploitFIL+',
-    #     'block_rewards': erpt*exchange_rate*filp_multiplier,
-    #     'deal_income': 0,
-    #     'pledge_cost': erpt*exchange_rate*filp_multiplier*borrowing_cost_pct,
-    #     'gas_cost': gas_cost_tib_per_yr,
-    #     'power_cost': power_cost_tib_per_yr,
-    #     'bandwidth_cost': bandwidth_10gbps_tib_per_yr,
-    #     'staff_cost': staff_cost_tib_per_yr,
-    #     'sealing_cost': sealing_costs_tib_per_yr,
-    #     'data_prep_cost': 1,
-    #     'bd_cost': 0,
-    #     'extra_copy_cost': (staff_cost_tib_per_yr*0.5+bandwidth_10gbps_tib_per_yr)*0.5,
-    #     'cheating_cost': penalty_tib_per_yr
-    # }
     cc_miner = {
         'SP Type':'CC',
         'block_rewards': erpt*exchange_rate*cc_multiplier,
         'deal_income': 0,
         'pledge_cost': erpt*exchange_rate*borrowing_cost_pct*cc_multiplier,
-        'gas_cost': gas_cost_without_psd_tib_per_yr,
+        'gas_cost': gas_cost_nopsd_tib_per_yr,
         'power_cost': power_cost_tib_per_yr,
         'bandwidth_cost': bandwidth_1gbps_tib_per_yr,
         'staff_cost': staff_cost_tib_per_yr,
-        'sealing_cost': sealing_costs_tib_per_yr,
+        'sealing_cost': sealing_cost_tib_per_yr,
         'data_prep_cost': 0,
         'bd_cost': 0,
         'extra_copy_cost': 0,
@@ -229,9 +204,7 @@ def compute_costs(scenario2erpt=None,
         'extra_copy_cost': 0,
         'cheating_cost': 0
     }
-    # df = pd.DataFrame([filp_miner, rd_miner, filp_exploit_miner, filp_cheat_miner, cc_miner, aws])
-    # df = pd.DataFrame([filp_miner, rd_miner, filp_exploit_miner, filp_exploit_with_retrieval, filp_exploit_with_retrieval_and_slash, cc_miner])
-    df = pd.DataFrame([filp_miner,filp_exploit_miner, rd_miner, cc_miner, pdp_miner,pdp_exploit_miner])
+    df = pd.DataFrame([filp_miner,filp_exploit_miner, rd_miner, cc_miner, pdp_miner, pdp_exploit_miner])
     # add final accounting to the DF
     revenue = df['block_rewards'] + df['deal_income']
     cost = (
