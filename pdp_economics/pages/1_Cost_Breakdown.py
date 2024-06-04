@@ -47,11 +47,15 @@ def compute_costs(scenario2erpt=None):
     deal_income_tib_per_yr = st.session_state['deal_income']
     pdp_deal_income_tib_per_yr = st.session_state['pdp_deal_income']
     data_prep_cost_tib_per_yr = st.session_state['data_prep_cost']
-    penalty_tib_per_yr = st.session_state['cheating_penalty']
+    penalty_tib_per_yr = 0
 
     power_cost_tib_per_yr = st.session_state['power_cost']
-    bw_cost_tib_per_yr = st.session_state['bw_cost']
     staff_cost_tib_per_yr = st.session_state['staff_cost']
+
+    # break out bandwidth costs by type
+    bw_cost_cc_tib_per_yr = st.session_state['bw_cost_cc']
+    bw_cost_filp_tib_per_yr = st.session_state['bw_cost_filp']
+    bw_cost_pdp_tib_per_yr = st.session_state['bw_cost_pdp']
 
     sealing_cost_tib_per_yr = st.session_state['sealing_cost']
 
@@ -68,7 +72,10 @@ def compute_costs(scenario2erpt=None):
         filp_bd_cost_tib_per_yr=filp_bd_cost_tib_per_yr, rd_bd_cost_tib_per_yr=rd_bd_cost_tib_per_yr,
         deal_income_tib_per_yr=deal_income_tib_per_yr, pdp_deal_income_tib_per_yr=pdp_deal_income_tib_per_yr,
         data_prep_cost_tib_per_yr=data_prep_cost_tib_per_yr, penalty_tib_per_yr=penalty_tib_per_yr,
-        power_cost_tib_per_yr=power_cost_tib_per_yr, bandwidth_10gbps_tib_per_yr=bw_cost_tib_per_yr,
+        power_cost_tib_per_yr=power_cost_tib_per_yr, 
+        bw_cc_tib_per_yr=bw_cost_cc_tib_per_yr,
+        bw_filp_tib_per_yr=bw_cost_filp_tib_per_yr,
+        pdp_bandwidth_tib_per_yr=bw_cost_pdp_tib_per_yr,
         staff_cost_tib_per_yr=staff_cost_tib_per_yr,
         sealing_cost_tib_per_yr=sealing_cost_tib_per_yr,
         gas_cost_nopsd_tib_per_yr=gas_cost_nopsd_tib_per_yr,
@@ -207,11 +214,6 @@ with st.sidebar:
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
         )
         st.slider(
-            'Bandwidth [10GBPS] Cost ($/TiB/Yr)', 
-            min_value=0.0, max_value=50.0, value=6.0, step=1.0, format='%0.02f', key="bw_cost",
-            on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
-        )
-        st.slider(
             'Sealing Cost ($/TiB/Yr)',
             min_value=0.0, max_value=10.0, value=1.3, step=0.1, format='%0.02f', key="sealing_cost",
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
@@ -237,6 +239,22 @@ with st.sidebar:
             min_value=0.0, max_value=20.0, value=0.1, step=0.1, format='%0.02f', key="gas_cost_pdp",
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
         )
+    with st.expander("Bandwidth", expanded=False):
+        st.slider(
+            'Bandwidth [CC] Cost ($/TiB/Yr)', 
+            min_value=0.0, max_value=50.0, value=0.6, step=0.1, format='%0.02f', key="bw_cost_cc",
+            on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
+        )
+        st.slider(
+            'Bandwidth [RD/FIL+] Cost ($/TiB/Yr)', 
+            min_value=0.0, max_value=50.0, value=6.0, step=0.1, format='%0.02f', key="bw_cost_filp",
+            on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
+        )
+        st.slider(
+            'Bandwidth [PDP] Cost ($/TiB/Yr)', 
+            min_value=0.0, max_value=50.0, value=9.0, step=0.1, format='%0.02f', key="bw_cost_pdp",
+            on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
+        )
     with st.expander("Multipliers", expanded=False):
         st.slider(
             'CC', min_value=1, max_value=20, value=1, step=1, key="cc_multiplier",
@@ -254,12 +272,12 @@ with st.sidebar:
             'FIL+', min_value=1, max_value=20, value=10, step=1, key="filp_multiplier",
             on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
         )
-    with st.expander("Penalties", expanded=False):
-        st.slider(
-            'FIL+ Slashing Penalty ($/TiB/Yr)', 
-            min_value=0.0, max_value=50.0, value=0.0, step=1.0, format='%0.02f', key="cheating_penalty",
-            on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
-        )
+    # with st.expander("Penalties", expanded=False):
+    #     st.slider(
+    #         'FIL+ Slashing Penalty ($/TiB/Yr)', 
+    #         min_value=0.0, max_value=50.0, value=0.0, step=1.0, format='%0.02f', key="cheating_penalty",
+    #         on_change=compute_costs, kwargs=compute_costs_kwargs, disabled=False, label_visibility="visible"
+    #     )
     
     st.button("Compute!", on_click=compute_costs, kwargs=compute_costs_kwargs, key="forecast_button")
 
