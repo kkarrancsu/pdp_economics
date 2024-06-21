@@ -2,7 +2,7 @@ pandas==1.5.3
 streamlit
 altair
 watchdog
-numpy
+numpy==1.26.4
 scipy
 matplotlib
 pystarboard @ git+https://github.com/protocol/pystarboard.git
